@@ -86,8 +86,8 @@ export const demoSnapshot: DemoSnapshot = {
   ],
   callback: {
     status: "Executed",
-    originChain: "Ethereum Sepolia",
-    destinationChain: "Base Sepolia",
+    originChain: `Ethereum Sepolia (${contractConfig.originChainId})`,
+    destinationChain: `Base Sepolia (${contractConfig.destinationChainId})`,
     callbackProxy: "Verified",
     rvmId: "RVM-18",
     txHash: "0x4c1b...9f2a",
@@ -118,3 +118,5 @@ export const demoSnapshot: DemoSnapshot = {
     },
   },
 };
+
+import { contractConfig } from "@/lib/contracts";
