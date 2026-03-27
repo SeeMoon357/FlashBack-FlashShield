@@ -1,0 +1,38 @@
+const { expect } = require("chai");
+const { ethers } = require("hardhat");
+
+describe("ReactiveProtection", function () {
+  it("emits a callback event for a matching NearLiquidation log", async function () {
+    const [deployer] = await ethers.getSigners();
+    const ReactiveProtection = await ethers.getContractFactory("ReactiveProtection");
+    const topic = ethers.id("NearLiquidation(bytes32,uint256)");
+
+    const contract = await ReactiveProtection.deploy(
+      11155111,
+      84532,
+      deployer.address,
+      topic,
+      deployer.address
+    );
+
+    const log = {
+      chain_id: 11155111,
+      _contract: deployer.address,
+      topic_0: BigInt(topic),
+      topic_1: 0,
+      topic_2: 0,
+      topic_3: 0,
+      data: ethers.AbiCoder.defaultAbiCoder().encode(
+        ["bytes32", "uint256"],
+        [ethers.encodeBytes32String("demo"), 84]
+      ),
+      block_number: 1,
+      op_code: 0,
+      block_hash: 0,
+      tx_hash: 0,
+      log_index: 0
+    };
+
+    await expect(contract.react(log)).to.be.revertedWith("Service only");
+  });
+});
