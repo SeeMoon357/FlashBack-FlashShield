@@ -20,15 +20,15 @@ FlashShield 是一个基于 Reactive Network 的黑客松 Demo，用来展示“
 
 更完整的地址、交易哈希和验证记录见：
 
-- [部署记录.md](/home/moons/projects/FlashShield/docs/部署记录.md)
+- [部署记录.md](docs/部署记录.md)
 
 ## 目录说明
 
 - `contracts/`：Solidity 合约、测试、部署脚本
 - `web/`：Next.js 前端 Demo
 - `docs/`：部署说明、部署记录、演示操作手册
-- [开发文档.md](/home/moons/projects/FlashShield/开发文档.md)：产品与架构说明
-- [开发步骤.md](/home/moons/projects/FlashShield/开发步骤.md)：开发执行步骤
+- [开发文档.md](开发文档.md)：产品与架构说明
+- [开发步骤.md](开发步骤.md)：开发执行步骤
 
 ## 本地运行
 
@@ -61,7 +61,7 @@ cp .env.example .env
 
 推荐直接看：
 
-- [演示操作手册.md](/home/moons/projects/FlashShield/docs/演示操作手册.md)
+- [演示操作手册.md](docs/演示操作手册.md)
 
 ## 当前定位
 
