@@ -31,23 +31,21 @@ contract ReactiveProtection is ReactiveBase {
                 _originChainId,
                 _originContract,
                 uint256(_nearLiquidationTopic),
-                0,
-                0,
-                0
+                REACTIVE_IGNORE,
+                REACTIVE_IGNORE,
+                REACTIVE_IGNORE
             );
         }
     }
 
     /// @notice Called by Reactive with the matching origin-chain event.
-    function react(LogRecord calldata log) external serviceOnly {
+    function react(LogRecord calldata log) external vmOnly {
         require(log.chain_id == originChainId, "Invalid origin chain");
         require(log._contract == originContract, "Invalid origin contract");
         require(bytes32(log.topic_0) == nearLiquidationTopic, "Invalid topic");
 
-        (bytes32 strategyId, uint256 triggerPrice) = abi.decode(
-            log.data,
-            (bytes32, uint256)
-        );
+        bytes32 strategyId = bytes32(log.topic_1);
+        uint256 triggerPrice = abi.decode(log.data, (uint256));
 
         emit Callback(
             destinationChainId,
@@ -55,18 +53,11 @@ contract ReactiveProtection is ReactiveBase {
             500000,
             abi.encodeWithSelector(
                 ICallbackTarget.onReactiveCallback.selector,
-                address(this),
+                address(0),
                 strategyId,
                 triggerPrice,
                 ACTION_PROTECT
             )
         );
     }
-
-    event Callback(
-        uint256 indexed chainId,
-        address indexed callbackContract,
-        uint64 indexed gasLimit,
-        bytes payload
-    );
 }

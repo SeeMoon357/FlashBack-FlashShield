@@ -1,3 +1,5 @@
+import { contractConfig } from "@/lib/contracts";
+
 export type TimelinePoint = {
   label: string;
   price: string;
@@ -49,54 +51,54 @@ export const demoSnapshot: DemoSnapshot = {
   wallet: {
     connected: false,
     label: "Connect wallet",
-    address: "0xA7f2...91cD",
+    address: "0x4137...5dd6",
     network: "Base Sepolia",
-    strategyId: "FS-001",
-    approved: "Prepared",
+    strategyId: "FS-007",
+    approved: "Executor funded and armed",
   },
   timeline: [
     {
-      label: "Block 1",
+      label: "Step 1",
       price: "$100.00",
       riskScore: 18,
       stage: "Safe",
-      note: "Position opened and monitored.",
+      note: "Position opened on Ethereum Sepolia.",
     },
     {
-      label: "Block 2",
-      price: "$92.00",
-      riskScore: 44,
+      label: "Step 2",
+      price: "$96.00",
+      riskScore: 39,
       stage: "Watch",
-      note: "Price drift detected.",
+      note: "Price softens but remains outside the warning zone.",
     },
     {
-      label: "Block 3",
-      price: "$84.00",
-      riskScore: 71,
+      label: "Step 3",
+      price: "$92.00",
+      riskScore: 74,
       stage: "NearLiquidation",
-      note: "Reactive subscription is armed.",
+      note: "NearLiquidation emitted and matched by Reactive.",
     },
     {
-      label: "Block 4",
-      price: "$72.00",
+      label: "Step 4",
+      price: "$92.00",
       riskScore: 92,
       stage: "Triggered",
-      note: "Protection has executed on B chain.",
+      note: "Base Sepolia executor received callback and protected 80%.",
     },
   ],
   callback: {
     status: "Executed",
     originChain: `Ethereum Sepolia (${contractConfig.originChainId})`,
     destinationChain: `Base Sepolia (${contractConfig.destinationChainId})`,
-    callbackProxy: "Verified",
-    rvmId: "RVM-18",
-    txHash: "0x4c1b...9f2a",
-    latency: "26s",
+    callbackProxy: "0xa6eA...A5a6 verified",
+    rvmId: "0x413716245425E7f9Ce59771Ba048F1f3DD675dd6",
+    txHash: "0x92c85b51...fe69872f",
+    latency: "~10-20s observed",
   },
   results: {
     unprotected: {
       title: "Unprotected",
-      subtitle: "No risk cut on destination chain.",
+      subtitle: "No destination-chain hedge applied.",
       balanceLabel: "Risk balance",
       balanceValue: "100%",
       retainedLabel: "Value retained",
@@ -107,7 +109,7 @@ export const demoSnapshot: DemoSnapshot = {
     },
     protected: {
       title: "Protected",
-      subtitle: "80% shifted to the stable side.",
+      subtitle: "80% shifted to the stable side on Base Sepolia.",
       balanceLabel: "Risk balance",
       balanceValue: "20%",
       retainedLabel: "Value retained",
@@ -118,5 +120,3 @@ export const demoSnapshot: DemoSnapshot = {
     },
   },
 };
-
-import { contractConfig } from "@/lib/contracts";

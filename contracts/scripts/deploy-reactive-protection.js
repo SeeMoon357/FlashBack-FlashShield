@@ -11,6 +11,7 @@ async function main() {
   const originContract = requireEnv("POSITION_RISK_SIMULATOR_ADDRESS");
   const destinationExecutor = requireEnv("PROTECTION_EXECUTOR_ADDRESS");
   const nearLiquidationTopic = hre.ethers.id("NearLiquidation(bytes32,uint256)");
+  const deployValueEth = process.env.REACTIVE_PROTECTION_DEPLOY_VALUE_ETH || "0.1";
 
   const factory = await hre.ethers.getContractFactory("ReactiveProtection");
   const contract = await factory.deploy(
@@ -18,7 +19,10 @@ async function main() {
     destinationChainId,
     originContract,
     nearLiquidationTopic,
-    destinationExecutor
+    destinationExecutor,
+    {
+      value: hre.ethers.parseEther(deployValueEth),
+    }
   );
   await contract.waitForDeployment();
 
@@ -36,12 +40,14 @@ async function main() {
       destinationChainId.toString(),
       originContract,
       nearLiquidationTopic,
-      destinationExecutor
+      destinationExecutor,
+      deployValueEth
     ]
   });
 
   console.log("ReactiveProtection deployed:", address);
   console.log("Deployment tx hash:", txHash);
+  console.log("Deployment value (ETH):", deployValueEth);
   console.log("Saved deployment file:", outputPath);
 }
 

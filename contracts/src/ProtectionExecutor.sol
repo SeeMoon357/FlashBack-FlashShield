@@ -29,6 +29,7 @@ contract ProtectionExecutor {
 
     address public immutable authorizedCallbackProxy;
     address public immutable expectedRvmId;
+    mapping(address => bool) private _authorizedSenders;
 
     uint256 public riskTokenBalance;
     uint256 public stableTokenBalance;
@@ -58,7 +59,7 @@ contract ProtectionExecutor {
         address _expectedRvmId,
         uint256 _initialRiskBalance,
         uint256 _initialStableBalance
-    ) {
+    ) payable {
         require(_authorizedCallbackProxy != address(0), "Proxy required");
         require(_expectedRvmId != address(0), "RVM required");
 
@@ -67,6 +68,20 @@ contract ProtectionExecutor {
         riskTokenBalance = _initialRiskBalance;
         stableTokenBalance = _initialStableBalance;
         status = ProtectionStatus.Idle;
+        _authorizedSenders[_authorizedCallbackProxy] = true;
+    }
+
+    receive() external payable {}
+
+    function pay(uint256 amount) external {
+        if (!_authorizedSenders[msg.sender]) {
+            revert InvalidCallbackSource(msg.sender);
+        }
+        require(address(this).balance >= amount, "Insufficient funds");
+        if (amount > 0) {
+            (bool success, ) = payable(msg.sender).call{value: amount}("");
+            require(success, "Transfer failed");
+        }
     }
 
     /// @notice Reactive callback entrypoint.

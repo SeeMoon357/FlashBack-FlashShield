@@ -10,13 +10,17 @@ async function main() {
   const expectedRvmId = requireEnv("EXPECTED_RVM_ID");
   const initialRiskBalance = BigInt(process.env.INITIAL_RISK_BALANCE || "100");
   const initialStableBalance = BigInt(process.env.INITIAL_STABLE_BALANCE || "0");
+  const deployValueEth = process.env.PROTECTION_EXECUTOR_DEPLOY_VALUE_ETH || "0.02";
 
   const factory = await hre.ethers.getContractFactory("ProtectionExecutor");
   const contract = await factory.deploy(
     callbackProxy,
     expectedRvmId,
     initialRiskBalance,
-    initialStableBalance
+    initialStableBalance,
+    {
+      value: hre.ethers.parseEther(deployValueEth),
+    }
   );
   await contract.waitForDeployment();
 
@@ -33,12 +37,14 @@ async function main() {
       callbackProxy,
       expectedRvmId,
       initialRiskBalance.toString(),
-      initialStableBalance.toString()
+      initialStableBalance.toString(),
+      deployValueEth
     ]
   });
 
   console.log("ProtectionExecutor deployed:", address);
   console.log("Deployment tx hash:", txHash);
+  console.log("Deployment value (ETH):", deployValueEth);
   console.log("Saved deployment file:", outputPath);
 }
 
