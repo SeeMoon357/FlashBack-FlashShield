@@ -109,6 +109,30 @@ function protectionStatusLabel(state: DemoState | null) {
   return "空闲";
 }
 
+function parseNumberInput(value: string) {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : NaN;
+}
+
+function friendlyErrorMessage(error: unknown) {
+  const message = error instanceof Error ? error.message : String(error);
+
+  if (message.includes("InvalidThreshold")) {
+    return "开仓失败：清算阈值必须大于 0，且必须小于开仓价格。";
+  }
+  if (message.includes("PositionAlreadyExists")) {
+    return "开仓失败：这个策略 ID 已经存在，请换一个新的策略 ID。";
+  }
+  if (message.includes("PositionNotFound")) {
+    return "操作失败：当前策略还没有开仓。";
+  }
+  if (message.includes("user rejected")) {
+    return "你取消了钱包签名。";
+  }
+
+  return message;
+}
+
 async function fetchDemoState(strategyId: string): Promise<DemoState> {
   const response = await fetch(`/api/demo-state?strategyId=${encodeURIComponent(strategyId)}`, {
     cache: "no-store",
@@ -135,6 +159,20 @@ export function LiveDemoDashboard() {
   const animationFrameRef = useRef<number | null>(null);
 
   const strategyIdBytes = useMemo(() => ethers.encodeBytes32String(strategyId), [strategyId]);
+  const entryPriceValue = parseNumberInput(entryPrice);
+  const liquidationThresholdValue = parseNumberInput(liquidationThreshold);
+  const markPriceValue = parseNumberInput(markPrice);
+  const openInputInvalid =
+    !strategyId.trim() ||
+    !Number.isFinite(entryPriceValue) ||
+    !Number.isFinite(liquidationThresholdValue) ||
+    entryPriceValue <= 0 ||
+    liquidationThresholdValue <= 0 ||
+    liquidationThresholdValue >= entryPriceValue;
+  const triggerInputInvalid =
+    !demoState?.position ||
+    !Number.isFinite(markPriceValue) ||
+    markPriceValue <= 0;
 
   useEffect(() => {
     void hydrateWallet();
@@ -266,8 +304,7 @@ export function LiveDemoDashboard() {
       await hydrateWallet();
       setFeedback("钱包已连接，现在可以直接在页面上触发演示。");
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Unknown error";
-      setFeedback(`连接钱包失败：${message}`);
+      setFeedback(`连接钱包失败：${friendlyErrorMessage(error)}`);
     } finally {
       setBusyAction(null);
     }
@@ -335,6 +372,11 @@ export function LiveDemoDashboard() {
   }
 
   async function openDemoPosition() {
+    if (openInputInvalid) {
+      setFeedback("开仓前请检查参数：清算阈值必须小于开仓价格，且两者都要大于 0。");
+      return;
+    }
+
     setBusyAction("open");
 
     try {
@@ -351,14 +393,18 @@ export function LiveDemoDashboard() {
       setFeedback(`已完成开仓，A 链交易哈希：${receipt.hash}`);
       await refreshState(strategyId);
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Unknown error";
-      setFeedback(`开仓失败：${message}`);
+      setFeedback(`开仓失败：${friendlyErrorMessage(error)}`);
     } finally {
       setBusyAction(null);
     }
   }
 
   async function triggerNearLiquidation() {
+    if (triggerInputInvalid) {
+      setFeedback("请先开仓，再输入一个有效的目标触发价。");
+      return;
+    }
+
     setBusyAction("trigger");
 
     try {
@@ -372,8 +418,7 @@ export function LiveDemoDashboard() {
       await refreshState(strategyId);
       await pollForProtection(strategyId);
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Unknown error";
-      setFeedback(`触发失败：${message}`);
+      setFeedback(`触发失败：${friendlyErrorMessage(error)}`);
       if (demoState?.position) {
         setDisplayMarkPrice(demoState.position.markPrice);
       }
@@ -490,7 +535,7 @@ export function LiveDemoDashboard() {
             type="button"
             className="action-button"
             onClick={openDemoPosition}
-            disabled={!wallet.connected || busyAction !== null}
+            disabled={!wallet.connected || busyAction !== null || openInputInvalid}
           >
             {busyAction === "open" ? "开仓中..." : "1. 开启演示仓位"}
           </button>
@@ -498,7 +543,7 @@ export function LiveDemoDashboard() {
             type="button"
             className="action-button action-button--secondary"
             onClick={triggerNearLiquidation}
-            disabled={!wallet.connected || busyAction !== null || !demoState?.position}
+            disabled={!wallet.connected || busyAction !== null || triggerInputInvalid}
           >
             {busyAction === "trigger" ? "触发中..." : "2. 触发接近清算"}
           </button>
