@@ -126,7 +126,7 @@ function timelineStageLabel(stage: NonNullable<PositionState>["stage"]) {
 }
 
 function protectionStatusLabel(state: DemoState | null) {
-  if (!state) {
+  if (!state?.protection) {
     return "未读取";
   }
   if (!state.protection.appliesToRequestedStrategy) {
@@ -281,7 +281,7 @@ export function LiveDemoDashboard() {
       const nextState = await fetchDemoState(targetStrategyId);
       setDemoState(nextState);
 
-      if (nextState.protection.appliesToRequestedStrategy) {
+      if (nextState.ok && nextState.protection?.appliesToRequestedStrategy) {
         setFeedback(`Reactive 回调已完成，${targetStrategyId} 已在 B 链建立 mock short 对冲仓位。`);
         return;
       }
@@ -494,13 +494,15 @@ export function LiveDemoDashboard() {
     }
   }
 
-  const appliesToCurrentStrategy = demoState?.protection.appliesToRequestedStrategy ?? false;
-  const hedgeSizeDisplay = appliesToCurrentStrategy ? demoState?.protection.hedgeSize : "未触发";
-  const hedgeTargetDisplay = appliesToCurrentStrategy ? `$${demoState?.protection.targetPrice}` : "未触发";
-  const hedgeTriggerDisplay = appliesToCurrentStrategy ? `$${demoState?.protection.triggerPrice}` : "未触发";
-  const hedgeDirectionDisplay = appliesToCurrentStrategy ? hedgeDirectionLabel(demoState?.protection.direction ?? 0) : "未触发";
-  const triggerTxHash = demoState?.callback.triggerTxHash || localTxs.triggerTxHash;
-  const protectionTxHash = demoState?.callback.protectionTxHash || "";
+  const protection = demoState?.protection;
+  const callback = demoState?.callback;
+  const appliesToCurrentStrategy = protection?.appliesToRequestedStrategy ?? false;
+  const hedgeSizeDisplay = appliesToCurrentStrategy ? protection?.hedgeSize : "未触发";
+  const hedgeTargetDisplay = appliesToCurrentStrategy ? `$${protection?.targetPrice}` : "未触发";
+  const hedgeTriggerDisplay = appliesToCurrentStrategy ? `$${protection?.triggerPrice}` : "未触发";
+  const hedgeDirectionDisplay = appliesToCurrentStrategy ? hedgeDirectionLabel(protection?.direction ?? 0) : "未触发";
+  const triggerTxHash = callback?.triggerTxHash || localTxs.triggerTxHash;
+  const protectionTxHash = callback?.protectionTxHash || "";
 
   return (
     <main className="shell">
@@ -726,37 +728,37 @@ export function LiveDemoDashboard() {
               <dl className="callback-grid">
                 <div>
                   <dt>源链</dt>
-                  <dd>{demoState.callback.originChain}</dd>
+                  <dd>{callback?.originChain ?? "未读取"}</dd>
                 </div>
                 <div>
                   <dt>目标链</dt>
-                  <dd>{demoState.callback.destinationChain}</dd>
+                  <dd>{callback?.destinationChain ?? "未读取"}</dd>
                 </div>
                 <div>
                   <dt>回调代理</dt>
-                  <dd>{shortAddress(demoState.callback.callbackProxy)}</dd>
+                  <dd>{shortAddress(callback?.callbackProxy ?? "")}</dd>
                 </div>
                 <div>
                   <dt>RVM ID</dt>
-                  <dd>{shortAddress(demoState.callback.rvmId)}</dd>
+                  <dd>{shortAddress(callback?.rvmId ?? "")}</dd>
                 </div>
                 <div>
                   <dt>最后一次策略</dt>
-                  <dd>{demoState.protection.strategyId || "暂无"}</dd>
+                  <dd>{protection?.strategyId || "暂无"}</dd>
                 </div>
                 <div>
                   <dt>触发价格</dt>
                   <dd>
-                    {appliesToCurrentStrategy ? `$${demoState.protection.triggerPrice}` : "当前策略尚未触发"}
+                    {appliesToCurrentStrategy ? `$${protection?.triggerPrice}` : "当前策略尚未触发"}
                   </dd>
                 </div>
                 <div>
                   <dt>对冲方向</dt>
-                  <dd>{appliesToCurrentStrategy ? hedgeDirectionLabel(demoState.protection.direction) : "当前策略尚未触发"}</dd>
+                  <dd>{appliesToCurrentStrategy ? hedgeDirectionLabel(protection?.direction ?? 0) : "当前策略尚未触发"}</dd>
                 </div>
                 <div>
                   <dt>对冲规模</dt>
-                  <dd>{appliesToCurrentStrategy ? demoState.protection.hedgeSize : "当前策略尚未触发"}</dd>
+                  <dd>{appliesToCurrentStrategy ? protection?.hedgeSize : "当前策略尚未触发"}</dd>
                 </div>
                 <div>
                   <dt>A 链触发哈希</dt>
@@ -873,8 +875,8 @@ export function LiveDemoDashboard() {
             </dl>
             <p className="result-note">
               当前增强版不再固定展示 80% 切仓，而是根据链上保存的抵押价值、触发价、目标价和合约乘数计算 mock short 规模。
-              {!appliesToCurrentStrategy && demoState?.protection.strategyId
-                ? ` 当前页面策略是 ${strategyId}，但 B 链最近一次成功策略是 ${demoState.protection.strategyId}，所以这里暂时显示未触发。`
+              {!appliesToCurrentStrategy && protection?.strategyId
+                ? ` 当前页面策略是 ${strategyId}，但 B 链最近一次成功策略是 ${protection.strategyId}，所以这里暂时显示未触发。`
                 : ""}
             </p>
             <div className="result-panel__rail">
