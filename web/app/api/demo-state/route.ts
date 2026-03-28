@@ -47,15 +47,30 @@ async function findLatestStrategyEventTxHash(
   strategyId: string
 ) {
   const latestBlock = await provider.getBlockNumber();
-  const fromBlock = latestBlock > 5_000 ? latestBlock - 5_000 : 0;
-  const logs = await provider.getLogs({
-    address,
-    fromBlock,
-    toBlock: latestBlock,
-    topics: [ethers.id(eventSignature), strategyId],
-  });
+  const maxLookbackBlocks = 300;
+  const maxRangeSize = 10;
+  const earliestBlock = latestBlock > maxLookbackBlocks ? latestBlock - maxLookbackBlocks : 0;
 
-  return logs.length > 0 ? logs.at(-1)?.transactionHash ?? "" : "";
+  for (let toBlock = latestBlock; toBlock >= earliestBlock; toBlock -= maxRangeSize) {
+    const fromBlock = Math.max(earliestBlock, toBlock - (maxRangeSize - 1));
+
+    try {
+      const logs = await provider.getLogs({
+        address,
+        fromBlock,
+        toBlock,
+        topics: [ethers.id(eventSignature), strategyId],
+      });
+
+      if (logs.length > 0) {
+        return logs.at(-1)?.transactionHash ?? "";
+      }
+    } catch {
+      return "";
+    }
+  }
+
+  return "";
 }
 
 function summarizeTimeline(markPrice: bigint, liquidationThreshold: bigint, positionStatus: number) {
