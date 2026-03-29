@@ -1,0 +1,46 @@
+# FlashShield Deployment Record
+
+## Active Contract Addresses
+
+- `PositionRiskSimulator` / Ethereum Sepolia
+  - Address: `0xc61465d293a4F7EaA11535bB805AF6447b932298`
+  - Deployment tx: `0x055d53479cb555e5e56c305e96abf97978b2fe33ccc86f2b94171aead9079717`
+
+- `ProtectionExecutor` / Base Sepolia
+  - Address: `0xE5181de9751b82C86ce1f5D5bd2F7B183e8cBd37`
+  - Deployment tx: `0x90f101a686b5bee5b27af62adeaeb3ab570005b6e5436db6cee76de8e4cd85d7`
+  - Note: this is the dynamic-hedge + mock-short version
+
+- `ReactiveProtection` / Reactive Lasna
+  - Address: `0x2Fb3e3f539B06940Fb37d5258dD409d36B959Bb9`
+  - Deployment tx: `0xfc0219b095ad93e7c6e8cccda6ddf09c5104c094382525591d7eadeb2bb6fc6d`
+
+## Frontend Address Configuration
+
+- `NEXT_PUBLIC_POSITION_RISK_SIMULATOR_ADDRESS=0xc61465d293a4F7EaA11535bB805AF6447b932298`
+- `NEXT_PUBLIC_PROTECTION_EXECUTOR_ADDRESS=0xE5181de9751b82C86ce1f5D5bd2F7B183e8cBd37`
+- `NEXT_PUBLIC_REACTIVE_PROTECTION_ADDRESS=0x2Fb3e3f539B06940Fb37d5258dD409d36B959Bb9`
+
+## Funding Transactions
+
+- Base Callback Proxy deposit for the new executor
+  - `0xb045fa3105fbce73ad71070a1ca5aaff7d5d1c3644e75810d9ba3fa106b5fedd`
+
+- ReactiveProtection debt coverage
+  - `0xd4243bee11cc493790e4aa0bc5fa8c813cb8ff62d7c8ab41dd6557f05d30e627`
+
+## Latest Validated End-to-End Run
+
+- Strategy ID: `FS-HEDGE-03`
+- A-chain open tx:
+  - `0x517e0a5126ab4ea468c2266e786d517285a392c4d4e62efc4f004182dd7cfbeb`
+- A-chain `NearLiquidation` tx:
+  - `0x7ae6e811f727526f8e3859ac11d03fc5f4e170643c12b1547695f5e58f38d930`
+- B-chain result:
+  - `hedgeSize = 108`
+  - `collateralValue = 1200`
+  - `triggerPrice = 91`
+  - `targetPrice = 82`
+  - `contractMultiplier = 100`
+  - `direction = SHORT`
+  - `status = ShortOpened`

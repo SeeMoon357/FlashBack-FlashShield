@@ -1,20 +1,20 @@
 # FlashShield
 
-FlashShield 是一个基于 Reactive Network 的黑客松 Demo，用来展示“源链发生风险事件，目标链自动执行保护动作”的跨链自动化流程。
+FlashShield is a hackathon demo built on Reactive Network. It shows a full cross-chain automation flow: a risk event is emitted on the origin chain, Reactive forwards the signal, and a protection action is executed on the destination chain.
 
 ## Demo Video
 
 - [Watch the demo video](docs/media/demo-video.mp4)
 
-## 当前已完成能力
+## What Is Already Working
 
-- A 链风控模拟合约会在接近清算时发出 `NearLiquidation`
-- Reactive 合约真实监听 origin 事件，并向 destination 发出 callback
-- B 链执行合约会根据 `collateralValue / triggerPrice / targetPrice / contractMultiplier` 计算 `hedgeSize`
-- B 链执行结果以 `mock short` 语义落链，而不是固定 `20 / 80` 切仓
-- 前端页面可以连接钱包、发起 A 链动作、读取真实链上状态，并展示对冲结果
+- The A-chain risk simulator emits `NearLiquidation` when a position enters the danger zone.
+- The Reactive contract listens to the real origin event and sends a real callback to the destination chain.
+- The B-chain executor calculates `hedgeSize` from `collateralValue / triggerPrice / targetPrice / contractMultiplier`.
+- The destination result is recorded on-chain as a `mock short`, not as a fixed `20 / 80` rebalance.
+- The frontend can connect a wallet, send the A-chain transactions, read live chain state, and display the resulting hedge.
 
-## 当前有效部署
+## Current Deployment
 
 - `PositionRiskSimulator` / Ethereum Sepolia
   - `0xc61465d293a4F7EaA11535bB805AF6447b932298`
@@ -23,60 +23,59 @@ FlashShield 是一个基于 Reactive Network 的黑客松 Demo，用来展示“
 - `ReactiveProtection` / Reactive Lasna
   - `0x2Fb3e3f539B06940Fb37d5258dD409d36B959Bb9`
 
-更完整的地址、交易哈希和验证记录见：
+For the full list of addresses, transaction hashes, and validation notes, see:
 
-- [部署记录.md](docs/部署记录.md)
+- [Deployment Record](docs/deployment-record.md)
 
-## 目录说明
+## Repository Layout
 
-- `contracts/`：Solidity 合约、测试、部署脚本
-- `web/`：Next.js 前端 Demo
-- `docs/`：部署说明、部署记录、演示操作手册、项目逻辑说明、本地复刻指南
-- [开发文档.md](开发文档.md)：产品与架构说明
-- [开发步骤.md](开发步骤.md)：开发执行步骤
-- [项目逻辑说明.md](docs/项目逻辑说明.md)：帮助快速理解系统当前能做什么、链路如何成立、当前边界是什么
-- [本地复刻指南.md](docs/本地复刻指南.md)：从拉取仓库到本地启动、测试和演示的完整命令步骤
+- `contracts/`: Solidity contracts, tests, and deployment scripts
+- `frontend/`: the public-facing React/Vite frontend used for submission
+- `docs/`: deployment notes, runbook, logic notes, and local reproduction guide
+- [Project Logic](docs/project-logic.md): what the system does and how the cross-chain flow should be understood
+- [Local Reproduction Guide](docs/local-reproduction-guide.md): end-to-end setup, deployment, and demo commands
 
-## 本地运行
+## Local Development
 
-### 合约
+### Contracts
 
 ```bash
 cd /home/moons/projects/FlashShield/contracts
-/home/moons/.local/node-v20.20.0-linux-x64/bin/node ./node_modules/hardhat/internal/cli/cli.js compile
-/home/moons/.local/node-v20.20.0-linux-x64/bin/node ./node_modules/hardhat/internal/cli/cli.js test
+npx hardhat compile
+npx hardhat test
 ```
 
-### 前端
+### Frontend
 
 ```bash
-cd /home/moons/projects/FlashShield/web
-/home/moons/.local/node-v20.20.0-linux-x64/bin/node ./node_modules/next/dist/bin/next dev --hostname 0.0.0.0 --port 3000
+cd /home/moons/projects/FlashShield/frontend
+npm install
+npm run dev -- --host 0.0.0.0 --port 3000
 ```
 
-## 环境变量
+## Environment Variables
 
-先从模板复制：
+Copy the template first:
 
 ```bash
 cp .env.example .env
 ```
 
-真实私钥和 RPC 只放本地 `.env`，不要提交到 Git。
+Keep real private keys and RPC URLs only in your local `.env`. Do not commit them.
 
-## 演示说明
+## Recommended Reading
 
-推荐直接看：
+- [Demo Runbook](docs/demo-runbook.md)
+- [Project Logic](docs/project-logic.md)
+- [Local Reproduction Guide](docs/local-reproduction-guide.md)
+- [Deployment Guide](docs/deployment-guide.md)
 
-- [演示操作手册.md](docs/演示操作手册.md)
-- [项目逻辑说明.md](docs/项目逻辑说明.md)
-- [本地复刻指南.md](docs/本地复刻指南.md)
+## Current Scope
 
-## 当前定位
+This repository is already in a submission-ready hackathon state.
 
-当前仓库已经达到“可提交黑客松 Demo”的状态。  
-后续如果还有时间，可以继续增强：
+Possible future upgrades:
 
-- GMX / 真实永续协议接入
-- 更真实的价格源与健康度模型
-- 完整自动恢复路径
+- GMX or other real perpetual protocol integration
+- A more realistic oracle and health-factor model
+- A complete recovery / close-hedge path
