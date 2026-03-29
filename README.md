@@ -2,6 +2,10 @@
 
 FlashShield 是一个基于 Reactive Network 的黑客松 Demo，用来展示“源链发生风险事件，目标链自动执行保护动作”的跨链自动化流程。
 
+## Demo Video
+
+- [Watch the demo video](docs/media/demo-video.mp4)
+
 ## 当前已完成能力
 
 - A 链风控模拟合约会在接近清算时发出 `NearLiquidation`
