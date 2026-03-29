@@ -1,6 +1,7 @@
 type ControlPanelProps = {
   walletConnected: boolean
   monitorArmed: boolean
+  hasOpenedPosition?: boolean
   ethPrice: number
   onPriceChange: (v: number) => void
   asset: string
@@ -11,13 +12,18 @@ type ControlPanelProps = {
   onHedgeRatioChange: (v: number) => void
   onSimulateCrash: () => void
   onStartMonitoring: () => void
+  onOpenPosition?: () => void
   onReset: () => void
   disabled: boolean
+  canSimulateCrash?: boolean
+  simulateHint?: string
+  onOpenLive?: () => void
 }
 
 export function ControlPanel({
   walletConnected,
   monitorArmed,
+  hasOpenedPosition = false,
   ethPrice,
   onPriceChange,
   asset,
@@ -28,8 +34,12 @@ export function ControlPanel({
   onHedgeRatioChange,
   onSimulateCrash,
   onStartMonitoring,
+  onOpenPosition,
   onReset,
   disabled,
+  canSimulateCrash = true,
+  simulateHint,
+  onOpenLive,
 }: ControlPanelProps) {
   return (
     <aside
@@ -47,6 +57,15 @@ export function ControlPanel({
         ：真实系统须部署<strong className="font-medium text-[#0A1F3F]/75">源合约、睿应式合约、目标合约</strong>
         ，由睿应监听 EVM 事件并触发目标链交易；滑块与按钮对应链上请改为 crashPrice / 浏览器可查的 tx 记录。
       </p>
+      {onOpenLive ? (
+        <button
+          type="button"
+          onClick={onOpenLive}
+          className="mt-2 w-full rounded-lg border border-[#036652]/25 bg-[#036652]/8 px-3 py-2 text-xs font-medium text-[#036652] transition hover:border-[#036652]/40 hover:bg-[#036652]/12"
+        >
+          进入真实链上页（/live）
+        </button>
+      ) : null}
 
       <div className="mt-4 space-y-4">
         <div>
@@ -128,6 +147,16 @@ export function ControlPanel({
                 ? "监控已启动"
                 : "开始监控"}
           </button>
+          {onOpenPosition ? (
+            <button
+              type="button"
+              disabled={disabled || !walletConnected}
+              onClick={onOpenPosition}
+              className="rounded-xl bg-[#0A1F3F] px-4 py-3 text-sm font-semibold text-white shadow-[0_8px_18px_rgba(10,31,63,0.2)] transition hover:bg-[#102f5e] disabled:opacity-50"
+            >
+              {hasOpenedPosition ? "已开仓（可新建策略再开）" : "链上开仓（钱包签名）"}
+            </button>
+          ) : null}
           {/**
            * 模拟价格暴跌：演示完整编排。
            * 实际集成：此处应订阅 A 链预言机价格；当 price &lt; threshold 时由 keeper / Reactive
@@ -135,12 +164,13 @@ export function ControlPanel({
            */}
           <button
             type="button"
-            disabled={disabled || !walletConnected || !monitorArmed}
+            disabled={disabled || !walletConnected || !monitorArmed || !canSimulateCrash}
             onClick={onSimulateCrash}
             className="rounded-xl bg-[#B7410E] px-4 py-3 text-sm font-semibold text-white shadow-[0_8px_18px_rgba(183,65,14,0.25)] transition hover:bg-[#c3521e] disabled:opacity-50"
           >
-            模拟价格暴跌
+            链上触发砸盘（真实）
           </button>
+          {simulateHint ? <p className="text-[10px] text-[#B7410E]/80">{simulateHint}</p> : null}
           {/**
            * 重置：恢复演示初始状态。
            * 实际集成：可改为断开 WS、清空本地缓存等。

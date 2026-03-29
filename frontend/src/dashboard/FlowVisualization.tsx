@@ -75,6 +75,14 @@ export function FlowVisualization({
 
   return (
     <section className="rounded-2xl border border-[#0A1F3F]/15 bg-[#FAF9F6]/90 p-4 shadow-[0_10px_28px_rgba(10,31,63,0.08)] backdrop-blur-md md:p-6">
+      <div className="mb-2 flex flex-wrap items-center justify-center gap-2">
+        <span className="rounded-full border border-[#036652]/25 bg-[#036652]/8 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-[#036652]">
+          真实数据: 部署地址/部署Tx
+        </span>
+        <span className="rounded-full border border-[#B7410E]/25 bg-[#B7410E]/8 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-[#B7410E]">
+          模拟数据: 价格曲线/砸盘按钮
+        </span>
+      </div>
       <h2 className="text-center text-lg font-semibold text-[#0A1F3F] md:text-xl">睿应层：源链事件 → 睿应订阅 → 目标链回调</h2>
       <p className="mt-1 text-center text-xs text-[#0A1F3F]/55">
         源合约（{cfg.originChainLabel}）→ 睿应式合约（Reactive）→ 目标合约（{cfg.destChainLabel}）· 大屏为编排演示；链上请以合约与
