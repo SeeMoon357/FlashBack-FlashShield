@@ -401,7 +401,7 @@ export function FlashShieldLive() {
         <div className="mx-auto flex h-14 max-w-[1100px] items-center justify-between gap-4 px-4">
           <div className="flex min-w-0 items-center gap-3">
             <Button variant="outline" size="sm" asChild>
-              <Link to="/dashboard">← 返回大屏</Link>
+              <Link to="/demo">← 返回演示大屏</Link>
             </Button>
             <span className="hidden text-sm font-semibold sm:inline">FlashShield · 链上实时</span>
             <ChainBadge />

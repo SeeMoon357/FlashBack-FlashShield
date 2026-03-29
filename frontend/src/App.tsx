@@ -13,6 +13,7 @@ export default function App() {
         <Route path="/" element={<FlashBackLanding />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/live" element={<FlashShieldLive />} />
+        <Route path="/demo" element={<Dashboard />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>

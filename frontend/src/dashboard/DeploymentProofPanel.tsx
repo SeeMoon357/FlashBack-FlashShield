@@ -75,7 +75,6 @@ export function DeploymentProofPanel({ config }: DeploymentProofPanelProps) {
             <HashRow label="睿应合约部署" hash={config.txReactiveDeploy} />
             <HashRow label="目标合约部署" hash={config.txDestinationDeploy} />
             <HashRow label="源链触发（如 crashPrice / PriceDropped）" hash={config.txOriginTrigger} />
-            <HashRow label="睿应层执行（按官方浏览器记录填写）" hash={config.txReactiveExecution} />
             <HashRow label="目标链 Callback / openHedge" hash={config.txDestinationCallback} />
           </div>
         </div>
