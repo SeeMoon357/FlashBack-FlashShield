@@ -11,3 +11,9 @@ docs/项目逻辑说明-内部.md
 docs/项目逻辑说明-目前.md
 out/
 typechain-types/
+tmp-receipt-query.js
+web/
+开发文档.md
+开发步骤.md
+升级开发文档.md
+升级开发步骤.md
