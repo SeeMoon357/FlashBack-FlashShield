@@ -1,6 +1,6 @@
 # FlashBack-FlashShield
 
-(FlashBack)FlashShield is a hackathon demo built on Reactive Network. It shows a full cross-chain automation flow: a risk event is emitted on the origin chain, Reactive forwards the signal, and a protection action is executed on the destination chain.
+FlashBack(FlashShield) is a hackathon demo built on Reactive Network. It shows a full cross-chain automation flow: a risk event is emitted on the origin chain, Reactive forwards the signal, and a protection action is executed on the destination chain.
 
 ## Demo Video
 
