@@ -1,10 +1,14 @@
-# FlashBack-FlashShield
+﻿# FlashBack-FlashShield
 
 FlashBack(FlashShield) is a hackathon demo built on Reactive Network. It shows a full cross-chain automation flow: a risk event is emitted on the origin chain, Reactive forwards the signal, and a protection action is executed on the destination chain.
 
 ## Demo Video
 
 - [Watch the demo video](docs/media/demo-video.mp4)
+
+## Live Site
+
+- [flash-back-flash-shield.vercel.app](https://flash-back-flash-shield.vercel.app)
 
 ## What Is Already Working
 
@@ -51,7 +55,8 @@ npx hardhat test
 cd frontend
 npm install
 npm run dev:host
-# 或本机访问：npm run dev:win
+# or use 
+pm run dev:win for local Windows access
 ```
 
 ## Environment Variables
@@ -81,7 +86,7 @@ The following contributors participated in this project, listed in alphabetical 
 - `SeeMoon357`
 - `vergissxie`
 
-Thanks to every team member for the work put into this hackathon. From the initial idea to the final implementation, every step depended on close collaboration and shared effort.🚀
+Thanks to every team member for the work put into this hackathon. From the initial idea to the final implementation, every step depended on close collaboration and shared effort.馃殌
 
 ## Current Scope
 
@@ -92,3 +97,4 @@ Possible future upgrades:
 - GMX or other real perpetual protocol integration
 - A more realistic oracle and health-factor model
 - A complete recovery / close-hedge path
+
