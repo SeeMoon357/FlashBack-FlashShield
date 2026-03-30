@@ -1,6 +1,6 @@
-# FlashShield
+# FlashBack-FlashShield
 
-FlashShield is a hackathon demo built on Reactive Network. It shows a full cross-chain automation flow: a risk event is emitted on the origin chain, Reactive forwards the signal, and a protection action is executed on the destination chain.
+(FlashBack)FlashShield is a hackathon demo built on Reactive Network. It shows a full cross-chain automation flow: a risk event is emitted on the origin chain, Reactive forwards the signal, and a protection action is executed on the destination chain.
 
 ## Demo Video
 
@@ -70,6 +70,18 @@ Keep real private keys and RPC URLs only in your local `.env`. Do not commit the
 - [Project Logic](docs/project-logic.md)
 - [Local Reproduction Guide](docs/local-reproduction-guide.md)
 - [Deployment Guide](docs/deployment-guide.md)
+
+## Contributors
+
+The following contributors participated in this project, listed in alphabetical order:
+
+- `fox896`
+- `klizz111`
+- `Krystal6633`
+- `SeeMoon357`
+- `vergissxie`
+
+Thanks to every team member for the work put into this hackathon. From the initial idea to the final implementation, every step depended on close collaboration and shared effort.🚀
 
 ## Current Scope
 
