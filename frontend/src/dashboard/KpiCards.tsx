@@ -54,7 +54,7 @@ export function KpiCards({ ethPrice, hedgeValue, systemStatus }: KpiCardsProps) 
           <Layers className="h-4 w-4 text-[#036652]" />
           <span className="text-xs">对冲链 (B)</span>
         </div>
-        <p className="mt-2 text-sm text-[#0A1F3F]/75">Polygon Mumbai</p>
+        <p className="mt-2 text-sm text-[#0A1F3F]/75">Base Sepolia</p>
         <p className="mt-1 font-mono text-lg font-semibold text-[#036652]">
           已对冲价值: {formatUsd(hedgeValue)}
         </p>
